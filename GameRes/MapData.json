@@ -1,0 +1,15 @@
+{
+    "mapKey": "GameRes/map.png",
+    "mapTextures": "GameRes/map-textures.png",
+    "mapTextureSize": [32, 32],
+    "colorMap": {
+        "ffff00ff": [0, 0],
+        "ffff967f": [1, 0],
+        "ffdaff7f": [2, 0],
+        "ffb3c663": [0, 1],
+        "ff9cad56": [1, 1],
+        "ffad6656": [2, 1],
+        "ff5599aa": [3, 1],
+        "ff32381c": [4, 1]
+    }
+}
