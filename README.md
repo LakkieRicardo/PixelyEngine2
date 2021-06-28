@@ -22,7 +22,7 @@ sbt clean
 ## Controls
 
 - WASD to move the camera around
-- F9 to toggle depth map view(white = furthest forward, near black = furthest back)
+- F9 to show debug menu
 
 ## Features
 
@@ -33,3 +33,4 @@ sbt clean
 - [ ] Collision
 - [ ] Lighting
 - [ ] Particles
+- [ ] File management(i.e. compile files into res.bin)

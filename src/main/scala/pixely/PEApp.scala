@@ -11,6 +11,8 @@ import pixely.math.Vector2i
 import scala.collection.mutable.ArrayBuffer
 import java.awt.event.KeyListener
 import java.awt.event.KeyEvent
+import pixely.debug.DebugFrame
+import pixely.graphics.DisplayLayer
 
 class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clearColor: Int = 0xff000000) extends Thread with KeyListener {
 
@@ -22,9 +24,10 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
     var gameRunning = true
     var deltaTimeNano = 0L
     var gameLoopThread = new Thread(this, "Game loop")
-    var depthMapMode = false
 
     var activeScene = new GameScene(this)
+    var activeLayer = DisplayLayer.Display
+
     /**
       * Map of all currently active keys, index by VK codes specified in `java.awt.event.KeyEvent`
       */
@@ -38,10 +41,11 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
         screen.clear(clearColor)
         activeScene.update()
         activeScene.renderSprites()
-        if (depthMapMode) {
+        if (activeLayer == DisplayLayer.DepthMap) {
             val renderableDepthMap = Renderer.translateDepthMapToScreen(depthMap)
             image.setRGB(0, 0, screenWidth, screenHeight, renderableDepthMap.pixels, 0, screenWidth)
-        } else {
+        }
+        if (activeLayer == DisplayLayer.Display) {
             image.setRGB(0, 0, screenWidth, screenHeight, screen.pixels, 0, screenWidth)
         }
         return image
@@ -73,7 +77,7 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
 
     override def keyPressed(keyEvent: KeyEvent) {
         activeKeys(keyEvent.getKeyCode()) = true;
-        if (keyEvent.getKeyCode() == KeyEvent.VK_F9) depthMapMode = !depthMapMode
+        if (keyEvent.getKeyCode() == KeyEvent.VK_F9) DebugFrame.createInstance(this)
     }
 
     override def keyReleased(keyEvent: KeyEvent) {
