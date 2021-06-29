@@ -31,7 +31,7 @@ class TestScene(app: PEApp) extends GameScene(app) {
         if (app.activeKeys(KeyEvent.VK_S)) change += new Vector2i(0, 1)
         if (app.activeKeys(KeyEvent.VK_A)) change += new Vector2i(-1, 0)
         if (app.activeKeys(KeyEvent.VK_D)) change += new Vector2i(1, 0)
-        app.activeScene.camera.translate(change * speed)
+        app.camera.translate(change * speed)
     }
 
 }

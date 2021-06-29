@@ -1,4 +1,4 @@
-[0m[[0m[0mdebug[0m] [0m[0m[pixely-engine-2-build] Classpath dependencies List()[0m
-[0m[[0m[0mdebug[0m] [0m[0m[pixely-engine-2-build] Dependencies from configurations List()[0m
-[0m[[0m[0mdebug[0m] [0m[0mBloop wrote the configuration of project 'pixely-engine-2-build' to 'C:\Users\Lakkie\vscode projects\pixely-engine-2\project\.bloop\pixely-engine-2-build.json'[0m
-[0m[[0m[32msuccess[0m] [0m[0mGenerated .bloop\pixely-engine-2-build.json[0m
+[debug] [pixely-engine-2-build] Classpath dependencies List()
+[debug] [pixely-engine-2-build] Dependencies from configurations List()
+[debug] Bloop wrote the configuration of project 'pixely-engine-2-build' to 'C:\Users\Lakkie\vscode projects\pixely-engine-2\project\.bloop\pixely-engine-2-build.json'
+[success] Generated .bloop\pixely-engine-2-build.json

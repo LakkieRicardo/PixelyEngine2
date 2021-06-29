@@ -13,6 +13,11 @@ import java.awt.event.KeyListener
 import java.awt.event.KeyEvent
 import pixely.debug.DebugFrame
 import pixely.graphics.DisplayLayer
+import pixely.graphics.lighting.LightSource
+import pixely.graphics.lighting.Lighting
+import pixely.graphics.lighting.PointLight
+import pixely.graphics.Camera
+import pixely.graphics.lighting.SkyLight
 
 class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clearColor: Int = 0xff000000) extends Thread with KeyListener {
 
@@ -20,10 +25,17 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
     val screen = new Texture(screenWidth, screenHeight, new Array[Int](screenWidth * screenHeight))
     val image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB)
     val depthMap = Texture.solid(Int.MinValue, screenWidth, screenHeight)
+
+    val lightingMap = Texture.solid(0xff000000, screenWidth, screenHeight)
+    val lightSources = ArrayBuffer[LightSource]()
+    lightSources.addOne(new PointLight(new Vector2i(50, 50)))
+    lightSources.addOne(new SkyLight(0.1D))
+
     var updatesPerSecond: Long = 60
     var gameRunning = true
     var deltaTimeNano = 0L
     var gameLoopThread = new Thread(this, "Game loop")
+    val camera = new Camera
 
     var activeScene = new GameScene(this)
     var activeLayer = DisplayLayer.Display
@@ -41,9 +53,16 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
         screen.clear(clearColor)
         activeScene.update()
         activeScene.renderSprites()
+        // Calculate lighting
+        Lighting.calculateLighting(lightSources, lightingMap, this, camera.getPosition())
+
         if (activeLayer == DisplayLayer.DepthMap) {
-            val renderableDepthMap = Renderer.translateDepthMapToScreen(depthMap)
+            val renderableDepthMap = Renderer.translateGraphicsMapToScreen(depthMap)
             image.setRGB(0, 0, screenWidth, screenHeight, renderableDepthMap.pixels, 0, screenWidth)
+        }
+        if (activeLayer == DisplayLayer.Lighting) {
+            val renderableLightingMap = Renderer.translateLightingMapToScreen(lightingMap, 0xffff0000)
+            image.setRGB(0, 0, screenWidth, screenHeight, renderableLightingMap.pixels, 0, screenWidth)
         }
         if (activeLayer == DisplayLayer.Display) {
             image.setRGB(0, 0, screenWidth, screenHeight, screen.pixels, 0, screenWidth)
@@ -77,7 +96,23 @@ class PEApp(title: String, screenWidth: Int = 400, screenHeight: Int = 200, clea
 
     override def keyPressed(keyEvent: KeyEvent) {
         activeKeys(keyEvent.getKeyCode()) = true;
-        if (keyEvent.getKeyCode() == KeyEvent.VK_F9) DebugFrame.createInstance(this)
+        if (keyEvent.getKeyCode == KeyEvent.VK_F9) DebugFrame.createInstance(this)
+        if (keyEvent.getKeyCode == KeyEvent.VK_BACK_QUOTE) {
+            activeLayer match {
+                case DisplayLayer.Display => {
+                    activeLayer = DisplayLayer.DepthMap
+                    DebugFrame.updateActiveLayer(this)
+                }
+                case DisplayLayer.DepthMap => {
+                    activeLayer = DisplayLayer.Lighting
+                    DebugFrame.updateActiveLayer(this)
+                }
+                case DisplayLayer.Lighting => {
+                    activeLayer = DisplayLayer.Display
+                    DebugFrame.updateActiveLayer(this)
+                }
+            }
+        }
     }
 
     override def keyReleased(keyEvent: KeyEvent) {

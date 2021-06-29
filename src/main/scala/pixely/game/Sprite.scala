@@ -11,11 +11,11 @@ class Sprite(var position: Vector2i, var zIndex: Int = 0, var texture: Texture) 
         position += offset;
     }
 
-    def render(screen: Texture, depthMap: Texture, camera: Camera) {
+    def render(screen: Texture, depthMap: Texture, lightingMap: Texture, camera: Camera) {
         val screenPos = camera.transformWorldToScreen(screen, position)
         // Don't render if not in screen
         if (screenPos.x + texture.width < 0 || screenPos.y + texture.height < 0 || screenPos.x >= screen.width || screenPos.y >= screen.height) return
-        Renderer.renderTextureDepth(screen, depthMap, screenPos.x, screenPos.y, zIndex, texture)
+        Renderer.renderTextureDepthLighting(screen, depthMap, lightingMap, screenPos.x, screenPos.y, zIndex, texture)
     }
 
 }

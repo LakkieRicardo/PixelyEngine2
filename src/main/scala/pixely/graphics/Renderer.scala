@@ -37,7 +37,7 @@ object Renderer {
         }
     }
 
-    def renderTextureDepth(target: Texture, targetDepthMap: Texture, xOffset: Int, yOffset: Int, zOffset: Int, src: Texture) {
+    def renderTextureDepthLighting(target: Texture, targetDepthMap: Texture, lightingMap: Texture, xOffset: Int, yOffset: Int, zOffset: Int, src: Texture) {
         var yPos = 0
         while (yPos < src.height) {
             var xPos = 0
@@ -55,26 +55,26 @@ object Renderer {
     }
 
     /**
-      * Converts a depth map into something that can be rendered in place of the screen. Calling this function will not modify the
+      * Converts a graphics map into something that can be rendered in place of the screen. Calling this function will not modify the
       * original texture.
       * 
       * The furthest back on the Z index will be rendered as black, and the furthest forward will be rendered as white.
       * However, this can be masked using the `colorMask` argument, for example, using 0xffff0000 will produce a black to red mask.
       * 
-      * @param depthMap Normal depth map
-      * @param colorMask The color to draw the depth map in. For example, to draw a red depth map use: 0xffff0000 (ARGB) 
+      * @param graphicsMap Normal graphics map
+      * @param colorMask The color to draw the graphics map in. For example, to draw a red graphics map use: 0xffff0000 (ARGB) 
       * @param minColor Minimum color to distinguish between pixels furthest back and empty pixels
-      * @return Renderable depth ma
+      * @return Renderable graphics map
       */
-    def translateDepthMapToScreen(depthMap: Texture, colorMask: Int = 0xffffffff, minColor: Int = 0x10): Texture = { 
-        val target = new Texture(depthMap.width, depthMap.height, new Array[Int](depthMap.pixels.length))
+    def translateGraphicsMapToScreen(graphicsMap: Texture, colorMask: Int = 0xffffffff, minColor: Int = 0x10): Texture = { 
+        val target = new Texture(graphicsMap.width, graphicsMap.height, new Array[Int](graphicsMap.pixels.length))
         
         // First pass, find max and min values excluding untouched areas
         var minValue = Int.MaxValue
         var maxValue = Int.MinValue
         var counter = 0
-        while (counter < depthMap.pixels.length) {
-            val sample = depthMap.pixels(counter)
+        while (counter < graphicsMap.pixels.length) {
+            val sample = graphicsMap.pixels(counter)
             if (sample != Int.MinValue) {
                 if (sample < minValue) minValue = sample
                 if (sample > maxValue) maxValue = sample
@@ -86,10 +86,10 @@ object Renderer {
 
         // Second pass, map each pixel between 0-255 between min and max values
         var yPos = 0
-        while (yPos < depthMap.height) {
+        while (yPos < graphicsMap.height) {
             var xPos = 0
-            while (xPos < depthMap.width) {
-                val depthMapSample = depthMap.sample(xPos, yPos).asInstanceOf[Float]
+            while (xPos < graphicsMap.width) {
+                val depthMapSample = graphicsMap.sample(xPos, yPos).asInstanceOf[Float]
                 // Areas of the screen the renderer did not touch are equal to Int.MinValue
                 if (depthMapSample != Int.MinValue) {
                     if (minValue == maxValue) {
@@ -110,6 +110,21 @@ object Renderer {
         }
 
         return target
+    }
+
+    def translateLightingMapToScreen(lightingMap: Texture, colorMask: Int = 0xffffffff): Texture = {
+        val result = new Texture(lightingMap.width, lightingMap.height, new Array[Int](lightingMap.pixels.length))
+        var yPos = 0
+        while (yPos < lightingMap.height) {
+            var xPos = 0
+            while (xPos < lightingMap.width) {
+                val pixel = lightingMap.sample(xPos, yPos)
+                result.pixels(xPos + yPos * result.width) = (0xff000000 | pixel << 16 | pixel << 8 | pixel) & colorMask
+                xPos += 1
+            }
+            yPos += 1
+        }
+        return result
     }
 
 }

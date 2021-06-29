@@ -30,26 +30,34 @@ class DebugFrame(app: PEApp) extends JFrame("Debug") with WindowListener with Ac
     c.insets = new Insets(15, 15, 15, 15)
     c.anchor = GridBagConstraints.CENTER
     add(titleText, c)
-    val layerButtonGroup = new ButtonGroup
-    val layerButtonDisplay = new JRadioButton("Display")
+    var layerButtonGroup = new ButtonGroup
+    var layerButtonDisplay = new JRadioButton("Display")
     layerButtonDisplay.setActionCommand("layer.display")
     layerButtonGroup.add(layerButtonDisplay)
     c.gridx = 0
     c.gridy = 1
     add(layerButtonDisplay, c)
 
-    val layerButtonDepthMap = new JRadioButton("Depth Map")
+    var layerButtonDepthMap = new JRadioButton("Depth Map")
     layerButtonDepthMap.setActionCommand("layer.depthmap")
     layerButtonGroup.add(layerButtonDepthMap)
     c.gridx = 0
     c.gridy = 2
     add(layerButtonDepthMap, c)
 
+    var layerButtonLighting = new JRadioButton("Lighting")
+    layerButtonLighting.setActionCommand("layer.lighting")
+    layerButtonGroup.add(layerButtonLighting)
+    c.gridx = 0
+    c.gridy = 3
+    add(layerButtonLighting, c)
+
     setSize(new Dimension(300, 300))
     setLocationRelativeTo(null)
     addWindowListener(this)
     layerButtonDisplay.addActionListener(this)
     layerButtonDepthMap.addActionListener(this)
+    layerButtonLighting.addActionListener(this)
     setVisible(true)
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
     layerButtonGroup.setSelected(layerButtonDisplay.getModel(), true)
@@ -77,6 +85,9 @@ class DebugFrame(app: PEApp) extends JFrame("Debug") with WindowListener with Ac
         if (e.getActionCommand().equals("layer.depthmap")) {
             app.activeLayer = DisplayLayer.DepthMap
         }
+        if (e.getActionCommand().equals("layer.lighting")) {
+            app.activeLayer = DisplayLayer.Lighting
+        }
     }
 
 }
@@ -91,6 +102,20 @@ object DebugFrame {
             return true
         } else {
             return false
+        }
+    }
+
+    /**
+      * If not null, modifies the debug frame to select the active layer
+      *
+      * @param app
+      */
+    def updateActiveLayer(app: PEApp) {
+        if (instance == null) return
+        app.activeLayer match {
+            case DisplayLayer.Display => instance.layerButtonGroup.setSelected(instance.layerButtonDisplay.getModel(), true)
+            case DisplayLayer.DepthMap => instance.layerButtonGroup.setSelected(instance.layerButtonDepthMap.getModel(), true)
+            case DisplayLayer.Lighting => instance.layerButtonGroup.setSelected(instance.layerButtonLighting.getModel(), true)
         }
     }
 

@@ -8,7 +8,6 @@ import pixely.PEApp
 class GameScene(app: PEApp) {
 
     val sprites = new ArrayBuffer[Sprite]
-    val camera = new Camera
 
     def update() {
         sprites.foreach((sprite) => sprite.update(app.deltaTimeNano.asInstanceOf[Float] / 1000000000f, app))
@@ -19,7 +18,7 @@ class GameScene(app: PEApp) {
       */
     final def renderSprites() {
         sprites.foreach((sprite) => {
-            sprite.render(app.screen, app.depthMap, camera)
+            sprite.render(app.screen, app.depthMap, app.lightingMap, app.camera)
         })
     }
 

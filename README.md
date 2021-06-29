@@ -23,6 +23,7 @@ sbt clean
 
 - WASD to move the camera around
 - F9 to show debug menu
+- Tilde/grave/back quote key to cycle through display layers
 
 ## Features
 
