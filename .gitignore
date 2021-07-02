@@ -1,6 +1,8 @@
-/target
-/null
-/.vscode
-/.metals
-/.bsp
 /.bloop
+/.metals
+/.vscode
+/project/project
+/project/target
+/project/.bloop
+/target
+/utils

@@ -1,4 +1,4 @@
-[debug] [pixely-engine-2-build] Classpath dependencies List()
-[debug] [pixely-engine-2-build] Dependencies from configurations List()
-[debug] Bloop wrote the configuration of project 'pixely-engine-2-build' to 'C:\Users\Lakkie\vscode projects\pixely-engine-2\project\.bloop\pixely-engine-2-build.json'
-[success] Generated .bloop\pixely-engine-2-build.json
+[debug] [pixelyengine2-build] Classpath dependencies List()
+[debug] [pixelyengine2-build] Dependencies from configurations List()
+[debug] Bloop wrote the configuration of project 'pixelyengine2-build' to '/home/lakkie/dev/PixelyEngine2/project/.bloop/pixelyengine2-build.json'
+[success] Generated .bloop/pixelyengine2-build.json
